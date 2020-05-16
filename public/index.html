@@ -1,7 +1,24 @@
 <!DOCTYPE html>
 <html>
 <body>
+
 <h1>Control LED light</h1>
-<input id = "light" type="checkbox">LED
+<p><input id = "light" type="checkbox">LED</p>
+
+<script src="https://cdnjs.cloudflair.com/ajax/libs/socket.io/2.0.3/socket.io.js></script> <!-- include scoket.io clientside script -->
+
+<script>
+var socket = io(); //load socket.io-client and connect to the host that servers the page
+window.addEventListener("load", function(){ //When page loads
+	var lightbox = document.getElementById("light");
+	lightbox.addEventListener("change", function() { //add event listener for when checkbox changes
+		socket.emit("light", Number(this.checked)); // send button status to server (as 1 or 0)
+	});
+});
+socket.on('light', function(data) { //get button status from client
+	document.getElementById("light").checked = data; // change checkbox according to pus button on Pi
+	socket.emit("light", data); // send push button status back to server
+});
+</script>
 </body>
 </html>
